@@ -6,13 +6,50 @@
 /*   By: mprofett <mprofett@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/06 13:11:11 by mprofett          #+#    #+#             */
-/*   Updated: 2023/12/06 16:42:07 by mprofett         ###   ########.fr       */
+/*   Updated: 2023/12/07 10:06:02 by mprofett         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ScalarConverter.hpp"
 
-bool	is_zero(std::string nbr)
+bool	nbr_is_valid(std::string nbr)
+{
+	std::string::iterator	it;
+
+	it = nbr.begin();
+	while (*it == ' ' && it != nbr.end())
+		++it;
+	if (it == nbr.end() || isdigit(*it) == 0)
+		return (0);
+	if (isdigit(*it) == 1 || *it == '+' || *it == '-')
+		++it;
+	while (isdigit(*it) == 1 && it != nbr.end())
+		++it;
+	if (it == nbr.end())
+		return (1);
+	if (*it == 'f')
+	{
+		++it;
+		if (it != nbr.end())
+			return (0);
+		else
+			return (1);
+	}
+	if (*it != '.')
+		return (0);
+	++it;
+	while (isdigit(*it) == 1 && it != nbr.end())
+		++it;
+	if (it == nbr.end())
+		return (1);
+	if (*it == 'f')
+		++it;
+	if (it == nbr.end())
+		return (1);
+	return (0);
+}
+
+bool	nbr_is_zero(std::string nbr)
 {
 	std::string::iterator	it;
 
@@ -127,41 +164,6 @@ void	display_double(double nbr)
 	std::cout << std::endl;
 }
 
-bool	nbr_is_valid(std::string nbr)
-{
-	std::string::iterator	it;
-
-	it = nbr.begin();
-	while (*it == ' ' && it != nbr.end())
-		++it;
-	if (it == nbr.end() || isdigit(*it) == 0)
-		return (0);
-	if (isdigit(*it) == 0 || *it == '+' || *it == '-')
-		++it;
-	while (isdigit(*it) == 0 && it != nbr.end())
-		++it;
-	if (it == nbr.end())
-		return (1);
-	if (*it == 'f')
-	{
-		++it;
-		if (it != nbr.end())
-			return (0);
-	}
-	if (*it != '.')
-		return (0);
-	++it;
-	while (isdigit(*it) == 0 && it != nbr.end())
-		++it;
-	if (it == nbr.end())
-		return (1);
-	if (*it == 'f')
-		++it;
-	if (it == nbr.end())
-		return (1);
-	return (0);
-}
-
 void	ScalarConverter::convert(std::string str)
 {
 	long int	int_nbr;
@@ -173,7 +175,7 @@ void	ScalarConverter::convert(std::string str)
 		return;
 	}
 	int_nbr = strtol(str.c_str(), NULL, 10);
-	if (int_nbr == 0 && is_zero(str) == 0)
+	if (int_nbr == 0 && nbr_is_zero(str) == 0)
 		std::cout << "char: impossible\nint: impossible\n";
 	else
 	{
@@ -181,7 +183,7 @@ void	ScalarConverter::convert(std::string str)
 		display_int(int_nbr);
 	}
 	double_nbr = strtod(str.c_str(), NULL);
-	if (double_nbr == 0 && is_zero(str) == 0)
+	if (double_nbr == 0 && nbr_is_zero(str) == 0)
 		std::cout << "float: impossible\ndouble: impossible\n";
 	else
 	{
